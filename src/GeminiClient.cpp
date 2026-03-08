@@ -1,14 +1,22 @@
 #include "GeminiClient.h"
 #include "secrets.h"
 #include <ArduinoJson.h>
+#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <base64.h>
 
 const char* GeminiClient::API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
 
 String GeminiClient::postAudio(int16_t* buffer, size_t size) {
     String full_url = String(API_URL) + String(GEMINI_API_KEY);
     
+    WiFiClientSecure *client = new WiFiClientSecure;
+    if(client) {
+        client->setInsecure(); // Não verificamos o certificado para não complicar agora
+    }
+
     HTTPClient http;
-    http.begin(full_url);
+    http.begin(*client, full_url);
     http.addHeader("Content-Type", "application/json");
 
     // Base64 encode the PCM data
@@ -68,5 +76,6 @@ String GeminiClient::postAudio(int16_t* buffer, size_t size) {
     }
 
     http.end();
+    if(client) delete client;
     return response;
 }
