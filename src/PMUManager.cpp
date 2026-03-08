@@ -3,7 +3,7 @@
 #define I2C_SDA 10
 #define I2C_SCL 11
 
-static XPowersPMU pmu;
+static XPowersAXP2101 pmu;
 
 bool PMUManager::begin() {
     Wire.begin(I2C_SDA, I2C_SCL);
