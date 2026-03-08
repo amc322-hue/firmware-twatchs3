@@ -2,7 +2,6 @@
 #define UI_MANAGER_H
 
 #include <lvgl.h>
-#include <LilyGoLib.h>
 
 enum UIState {
     UI_STATE_IDLE,

@@ -1,5 +1,7 @@
 #include <Arduino.h>
-#include <LilyGoLib.h>
+#include <Wire.h>
+#include <lvgl.h>
+#include <XPowersLib.h>
 #include "PMUManager.h"
 #include "AudioCapture.h"
 #include "WiFiManager.h"
@@ -14,23 +16,31 @@ int16_t* recording_buffer = nullptr;
 size_t samples_captured = 0;
 bool is_recording = false;
 
+XPowersAXP2101 pmu;
+
 void setup() {
     Serial.begin(115200);
 
-    // 1. Initialize Watch Hardware (Display, Power, Touch)
-    watch.begin();
-    
-    // 2. Initialize LVGL
-    lv_init();
-    watch.lvgl_begin(); 
+    // 1. Initialize I2C for PMU and Touch
+    Wire.begin(10, 11); // SDA=10, SCL=11
 
-    // 3. Initialize UI
+    // 2. Initialize PMU
+    if (!pmu.begin(Wire, AXP2101_SLAVE_ADDRESS, 10, 11)) {
+        Serial.println("PMU Init Failed!");
+    } else {
+        pmu.setALDO1Voltage(3300); pmu.enableALDO1(); // RTC/Sensors
+        pmu.setALDO2Voltage(3300); pmu.enableALDO2(); // Display
+        pmu.setALDO3Voltage(3300); pmu.enableALDO3(); // Touch/Mic
+        pmu.setBLDO1Voltage(3300); pmu.enableBLDO1(); // Backlight
+    }
+
+    // 3. Initialize LVGL
+    lv_init();
+    
+    // 4. Initialize UI
     UIManager::begin();
 
-    // 4. Initialize Peripherals
-    if (!PMUManager::begin()) return;
-    PMUManager::enableMicrophonePower();
-
+    // 5. Initialize Peripherals
     if (!AudioCapture::begin()) return;
     WiFiManager::connect();
 
@@ -39,7 +49,7 @@ void setup() {
         Serial.println("Memory allocation failed!");
         UIManager::setResponse("Memory allocation failed! Jerry made this.");
     } else {
-        Serial.println("PickleRick AI Ready.");
+        Serial.println("PickleRick AI Ready (LilyGoLib-free).");
     }
 }
 

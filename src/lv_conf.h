@@ -92,4 +92,15 @@
     #define LV_LOG_PRINTF 1
 #endif
 
+/*=========================
+ *  FONT USAGE
+ *=========================*/
+
+/*Montserrat fonts with ASCII range and some symbols using 4 bpp*/
+#define LV_FONT_MONTSERRAT_14 1
+#define LV_FONT_MONTSERRAT_20 1
+
+/*Declare the default font*/
+#define LV_FONT_DEFAULT &lv_font_montserrat_14
+
 #endif /*LV_CONF_H*/
