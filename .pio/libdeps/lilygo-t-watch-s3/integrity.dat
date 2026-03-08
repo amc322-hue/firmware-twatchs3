@@ -1,0 +1,7 @@
+densaugeo/base64 @ ^1.4.0
+bblanchon/ArduinoJson @ ^7.0.4
+mikalhart/TinyGPSPlus @ ^1.0.3
+lewisxhe/XPowersLib @ 0.2.7
+lvgl/lvgl @ 8.3.11
+bodmer/TFT_eSPI @ 2.5.43
+arduino-libraries/NTPClient @ ^3.2.1
